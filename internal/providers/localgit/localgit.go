@@ -14,11 +14,11 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"golang.org/x/exp/slices"
 
-	"github.com/easyp-tech/server/internal/providers/content"
-	"github.com/easyp-tech/server/internal/providers/filter"
-	"github.com/easyp-tech/server/internal/providers/localgit/namedlocks"
-	"github.com/easyp-tech/server/internal/providers/source"
-	"github.com/easyp-tech/server/internal/shake256"
+	"github.com/tammio/server/internal/providers/content"
+	"github.com/tammio/server/internal/providers/filter"
+	"github.com/tammio/server/internal/providers/localgit/namedlocks"
+	"github.com/tammio/server/internal/providers/source"
+	"github.com/tammio/server/internal/shake256"
 )
 
 const (

@@ -9,7 +9,7 @@ import (
 
 	module "github.com/easyp-tech/server/gen/proto/buf/alpha/module/v1alpha1"
 	registry "github.com/easyp-tech/server/gen/proto/buf/alpha/registry/v1alpha1"
-	"github.com/easyp-tech/server/internal/shake256"
+	"github.com/tammio/server/internal/shake256"
 )
 
 const digestFormat = "shake256:%s  %s\n"

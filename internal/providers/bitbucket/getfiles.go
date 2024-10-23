@@ -7,9 +7,9 @@ import (
 
 	"golang.org/x/exp/slices"
 
-	"github.com/easyp-tech/server/internal/providers/content"
-	"github.com/easyp-tech/server/internal/providers/filter"
-	"github.com/easyp-tech/server/internal/shake256"
+	"github.com/tammio/server/internal/providers/content"
+	"github.com/tammio/server/internal/providers/filter"
+	"github.com/tammio/server/internal/shake256"
 )
 
 func (c client) GetFiles(

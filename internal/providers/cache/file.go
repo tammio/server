@@ -9,7 +9,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/easyp-tech/server/internal/providers/content"
+	"github.com/tammio/server/internal/providers/content"
 )
 
 type Local struct {

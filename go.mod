@@ -1,4 +1,4 @@
-module github.com/easyp-tech/server
+module github.com/tammio/server
 
 go 1.22
 

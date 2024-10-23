@@ -7,8 +7,8 @@ import (
 
 	"golang.org/x/exp/slog"
 
-	"github.com/easyp-tech/server/internal/providers/content"
-	"github.com/easyp-tech/server/internal/providers/source"
+	"github.com/tammio/server/internal/providers/content"
+	"github.com/tammio/server/internal/providers/source"
 )
 
 type Source interface {

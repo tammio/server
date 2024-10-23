@@ -3,7 +3,7 @@ package config
 import (
 	"net/netip"
 
-	"github.com/easyp-tech/server/cmd/easyp/internal/config/cachetype"
+	"github.com/tammio/server/cmd/easyp/internal/config/cachetype"
 )
 
 type Config struct {

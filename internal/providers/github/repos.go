@@ -8,9 +8,9 @@ import (
 	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 
-	"github.com/easyp-tech/server/internal/providers/content"
-	"github.com/easyp-tech/server/internal/providers/filter"
-	"github.com/easyp-tech/server/internal/providers/source"
+	"github.com/tammio/server/internal/providers/content"
+	"github.com/tammio/server/internal/providers/filter"
+	"github.com/tammio/server/internal/providers/source"
 )
 
 type Repo struct {

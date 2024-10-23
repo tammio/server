@@ -3,7 +3,7 @@ package cache
 import (
 	"context"
 
-	"github.com/easyp-tech/server/internal/providers/content"
+	"github.com/tammio/server/internal/providers/content"
 )
 
 type Noop struct{}

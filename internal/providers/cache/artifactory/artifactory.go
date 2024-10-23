@@ -12,7 +12,7 @@ import (
 
 	"golang.org/x/exp/slog"
 
-	"github.com/easyp-tech/server/internal/providers/content"
+	"github.com/tammio/server/internal/providers/content"
 )
 
 var ErrUnexpected = errors.New("unexpected")

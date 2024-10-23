@@ -3,7 +3,7 @@ package content
 import (
 	"time"
 
-	"github.com/easyp-tech/server/internal/shake256"
+	"github.com/tammio/server/internal/shake256"
 )
 
 type Meta struct {

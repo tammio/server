@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/easyp-tech/server/internal/providers/content"
+	"github.com/tammio/server/internal/providers/content"
 )
 
 func (c client) GetMeta(ctx context.Context, owner, repoName, commit string) (content.Meta, error) {

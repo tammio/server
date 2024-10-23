@@ -3,7 +3,7 @@ package source
 import (
 	"context"
 
-	"github.com/easyp-tech/server/internal/providers/content"
+	"github.com/tammio/server/internal/providers/content"
 )
 
 type Source interface {

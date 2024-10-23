@@ -7,19 +7,19 @@ import (
 
 	"golang.org/x/exp/slog"
 
-	"github.com/easyp-tech/server/cmd/easyp/internal/config"
-	"github.com/easyp-tech/server/cmd/easyp/internal/config/cachetype"
-	"github.com/easyp-tech/server/internal/connect"
-	"github.com/easyp-tech/server/internal/https"
-	"github.com/easyp-tech/server/internal/logger"
-	"github.com/easyp-tech/server/internal/providers/bitbucket"
-	"github.com/easyp-tech/server/internal/providers/cache"
-	"github.com/easyp-tech/server/internal/providers/cache/artifactory"
-	"github.com/easyp-tech/server/internal/providers/filter"
-	"github.com/easyp-tech/server/internal/providers/github"
-	"github.com/easyp-tech/server/internal/providers/localgit"
-	"github.com/easyp-tech/server/internal/providers/localgit/namedlocks"
-	"github.com/easyp-tech/server/internal/providers/multisource"
+	"github.com/tammio/server/cmd/easyp/internal/config"
+	"github.com/tammio/server/cmd/easyp/internal/config/cachetype"
+	"github.com/tammio/server/internal/connect"
+	"github.com/tammio/server/internal/https"
+	"github.com/tammio/server/internal/logger"
+	"github.com/tammio/server/internal/providers/bitbucket"
+	"github.com/tammio/server/internal/providers/cache"
+	"github.com/tammio/server/internal/providers/cache/artifactory"
+	"github.com/tammio/server/internal/providers/filter"
+	"github.com/tammio/server/internal/providers/github"
+	"github.com/tammio/server/internal/providers/localgit"
+	"github.com/tammio/server/internal/providers/localgit/namedlocks"
+	"github.com/tammio/server/internal/providers/multisource"
 )
 
 //nolint:gochecknoglobals
