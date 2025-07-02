@@ -51,7 +51,7 @@ func main() {
 		serve   = func() error { return http.ListenAndServe(cfg.Listen.String(), loggingMiddleware(log, handler)) } //nolint:gosec
 	)
 
-	log.Debug("started", slog.Any("config", cfg))
+	log.Info("Service started successfully.")
 
 	if cfg.TLS.CertFile != "" {
 		serve = func() error {
@@ -79,10 +79,19 @@ func newLogger(level string) *slog.Logger {
 	}
 
 	opts := &slog.HandlerOptions{
-		Level: logLevel,
+		Level:       logLevel,
+		AddSource:   true,
+		ReplaceAttr: replaceAttrs,
 	}
 
-	return slog.New(slog.NewTextHandler(os.Stdout, opts))
+	return slog.New(slog.NewJSONHandler(os.Stdout, opts))
+}
+
+func replaceAttrs(groups []string, attr slog.Attr) slog.Attr {
+	if attr.Key == "time" {
+		attr.Value = slog.StringValue(attr.Value.Time().Format(time.RFC3339Nano))
+	}
+	return attr
 }
 
 func loggingMiddleware(log *slog.Logger, next http.Handler) http.Handler {
