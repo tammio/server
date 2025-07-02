@@ -47,6 +47,11 @@ listen:  127.0.0.1:8080
 # Note: buf requires TLS, so this is a name your cert is assigned.
 domain:  easyp.tech:8080
 
+# set up log level
+# Note: info level is default.
+log:
+  level: "info" # debug, info, warn, error
+
 # Cache configuration
 cache:
   # Cache type: none | local | artifactory

@@ -4,6 +4,8 @@ import (
 	"flag"
 	"net/http"
 	"os"
+	"strings"
+	"time"
 
 	"golang.org/x/exp/slog"
 
@@ -11,7 +13,6 @@ import (
 	"github.com/easyp-tech/server/cmd/easyp/internal/config/cachetype"
 	"github.com/easyp-tech/server/internal/connect"
 	"github.com/easyp-tech/server/internal/https"
-	"github.com/easyp-tech/server/internal/logger"
 	"github.com/easyp-tech/server/internal/providers/bitbucket"
 	"github.com/easyp-tech/server/internal/providers/cache"
 	"github.com/easyp-tech/server/internal/providers/cache/artifactory"
@@ -25,7 +26,6 @@ import (
 //nolint:gochecknoglobals
 var (
 	cfgFile = flag.String("cfg", "./local.config.yml", "path to Config file")
-	debug   = flag.Bool("debug", false, "enable debug logging")
 )
 
 const (
@@ -37,7 +37,7 @@ func main() {
 
 	var (
 		cfg      = must(config.ReadYaml[config.Config](*cfgFile))
-		log      = logger.New(*debug)
+		log      = newLogger(cfg.Log.Level)
 		nameLock = namedlocks.New(minNumberOfRepos)
 		cache    = buildCache(log, cfg.Cache)
 		storage  = multisource.New(
@@ -48,14 +48,14 @@ func main() {
 			githubProxy(log, cfg.Proxy.Github),
 		)
 		handler = connect.New(log, storage, cfg.Domain)
-		serve   = func() error { return http.ListenAndServe(cfg.Listen.String(), handler) } //nolint:gosec
+		serve   = func() error { return http.ListenAndServe(cfg.Listen.String(), loggingMiddleware(log, handler)) } //nolint:gosec
 	)
 
 	log.Debug("started", slog.Any("config", cfg))
 
 	if cfg.TLS.CertFile != "" {
 		serve = func() error {
-			return https.ListenAndServe(cfg.Listen, handler, cfg.TLS.CertFile, cfg.TLS.KeyFile, cfg.TLS.CACertFile)
+			return https.ListenAndServe(cfg.Listen, loggingMiddleware(log, handler), cfg.TLS.CertFile, cfg.TLS.KeyFile, cfg.TLS.CACertFile)
 		}
 	}
 
@@ -63,6 +63,80 @@ func main() {
 		log.Error("shutdown", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
+}
+
+func newLogger(level string) *slog.Logger {
+	var logLevel slog.Level
+	switch strings.ToLower(level) {
+	case "debug":
+		logLevel = slog.LevelDebug
+	case "warn", "warning":
+		logLevel = slog.LevelWarn
+	case "error":
+		logLevel = slog.LevelError
+	default:
+		logLevel = slog.LevelInfo
+	}
+
+	opts := &slog.HandlerOptions{
+		Level: logLevel,
+	}
+
+	return slog.New(slog.NewTextHandler(os.Stdout, opts))
+}
+
+func loggingMiddleware(log *slog.Logger, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
+		headers := r.Header.Clone()
+
+		maskSensitiveHeaders(headers)
+
+		log.Debug("request details",
+			slog.String("method", r.Method),
+			slog.String("path", r.URL.Path),
+			slog.Any("headers", headers),
+		)
+
+		lrw := &loggingResponseWriter{ResponseWriter: w}
+
+		next.ServeHTTP(lrw, r)
+
+		duration := time.Since(start)
+		log.Info("request completed",
+			slog.String("method", r.Method),
+			slog.String("path", r.URL.Path),
+			slog.Int("status", lrw.status),
+			slog.Duration("duration", duration),
+		)
+	})
+}
+
+func maskSensitiveHeaders(headers http.Header) {
+	for key := range headers {
+		if isSensitiveHeader(key) {
+			headers.Set(key, "***")
+		}
+	}
+}
+
+func isSensitiveHeader(key string) bool {
+	key = strings.ToLower(key)
+	return key == "authorization" ||
+		key == "cookie" ||
+		key == "x-api-key" ||
+		key == "token"
+}
+
+type loggingResponseWriter struct {
+	http.ResponseWriter
+	status int
+}
+
+func (lrw *loggingResponseWriter) WriteHeader(code int) {
+	lrw.status = code
+	lrw.ResponseWriter.WriteHeader(code)
 }
 
 func must[T any](v T, err error) T {
@@ -115,7 +189,7 @@ func bbProxy(log *slog.Logger, defs []config.BitBucketRepo) multisource.Source {
 	return bitbucket.NewMultiRepo(log, repos)
 }
 
-func filterRepos(defs []config.Repo) []filter.Repo {
+func filterRepos(defs []config.Repo) []filter.Repo { //nolint:ireturn
 	repos := make([]filter.Repo, 0, len(defs))
 	for _, def := range defs {
 		repos = append(
